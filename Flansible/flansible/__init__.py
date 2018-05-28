@@ -31,7 +31,7 @@ auth = HTTPBasicAuth()
 this_path = sys.path[0]
 
 config = SafeConfigParser()
-config.read('config.ini')
+config.read('/usr/local/etc/flansible/config.ini')
 
 ansible_config = SafeConfigParser()
 try:
@@ -56,11 +56,27 @@ celery.conf.update(app.config)
 inventory_access = []
 
 
+
+def get_playbook_repo_access(username, playbook_repo):
+    if username == "admin":
+        return True
+    result = False
+    with open("/usr/local/etc/flansible/rbac.json") as rbac_file:
+        rbac_data = json.load(rbac_file)
+    user_list = rbac_data['rbac']
+    for user in user_list:
+        if user['user'] == username:
+            ansible_repo_list = user['ansible_repos']
+            if ansible_repo in ansible_repo_list:
+                result = True
+    return result
+
+
 def get_inventory_access(username, inventory):
     if username == "admin":
         return True
     result = False
-    with open("rbac.json") as rbac_file:
+    with open("/usr/local/etc/flansible/rbac.json") as rbac_file:
         rbac_data = json.load(rbac_file)
     user_list = rbac_data['rbac']
     for user in user_list:
@@ -74,7 +90,7 @@ def get_inventory_access(username, inventory):
 @auth.verify_password
 def verify_password(username, password):
     result = False
-    with open("rbac.json") as rbac_file:
+    with open("/usr/local/etc/flansible/rbac.json") as rbac_file:
         rbac_data = json.load(rbac_file)
     user_list = rbac_data['rbac']
     for user in user_list:

@@ -1,4 +1,5 @@
 import os
+import json
 from flask_restful import Resource, Api
 from flask_restful_swagger import swagger
 from flansible import app
@@ -7,6 +8,7 @@ from flansible import verify_password, get_inventory_access
 from ModelClasses import AnsibleCommandModel, AnsiblePlaybookModel, AnsibleRequestResultModel, AnsibleExtraArgsModel
 
 import celery_runner
+import playbook_perms
 
 class Playbooks(Resource):
     @swagger.operation(
@@ -21,11 +23,13 @@ class Playbooks(Resource):
     )
     @auth.login_required
     def get(self):
+        curr_user = auth.username()
         yamlfiles = []
         print("listing playbooks in " + playbook_root)
         for root, dirs, files in os.walk(playbook_root):
-            for name in files:
-                if name.endswith((".yaml", ".yml")):
+           for name in files:
+              if(get_playbook_repo_access(curr_user,root)):
+                 if name.endswith((".yaml", ".yml")):
                     fileobj = {'playbook': name, 'playbook_dir': root}
                     yamlfiles.append(fileobj)
         

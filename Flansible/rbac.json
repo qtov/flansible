@@ -6,17 +6,31 @@
       "inventories": [
         "username admin has implicit access to all inventories",
         "no need to specify anything here"
+      ],
+      "playbook_repos": [
+        "/home/tools/REST/playbooks1",
+        "/home/tools/REST/playbooks2"
       ]
-
     },
     {
-      "user": "devadmin",
-      "password": "devpassword",
+      "user": "user01",
+      "password": "1234",
       "inventories": [
-        "/some/folder/dev",
-        "/home/thadministrator/hosts"
+        "/etc/ansible/hosts"
+      ],
+      "playbook_repos": [
+        "/home/tools/REST/playbooks1"
       ]
-
+    },
+    {
+      "user": "user02",
+      "password": "1234",
+      "inventories": [
+        "/etc/ansible/hosts"
+      ],
+      "playbook_repos": [
+        "/home/tools/REST/playbooks2"
+      ]
     }
 
   ]

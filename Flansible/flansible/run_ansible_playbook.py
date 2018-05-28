@@ -1,4 +1,7 @@
 import os
+import json
+import datetime
+
 from flask_restful import Resource, Api
 from flask_restful_swagger import swagger
 from flask_restful import reqparse
@@ -8,6 +11,9 @@ from ModelClasses import AnsibleCommandModel, AnsiblePlaybookModel, AnsibleReque
 import celery_runner
 from flansible_git import FlansibleGit
 import json
+
+import playbook_perms
+
 
 class RunAnsiblePlaybook(Resource):
     @swagger.operation(
@@ -87,6 +93,10 @@ class RunAnsiblePlaybook(Resource):
             resp = app.make_response((str.format("Playbook not found in folder. Path does not exist: {0}", playbook_full_path), 404))
             return resp
 
+        if not get_playbook_repo_access(curr_user,playbook_dir):
+            resp = app.make_response((str.format("User does not have an access to playbook directory: {0}", playbook_dir), 404))
+            return resp
+
         if not inventory:
             inventory = ansible_default_inventory
             has_inv_access = get_inventory_access(curr_user, inventory)
@@ -106,16 +116,27 @@ class RunAnsiblePlaybook(Resource):
             become_string = ''
 
         extra_vars_string = ''
+
+        vault_file_string = ''
+
         if extra_vars:
             #extra_vars_string = str.format("  --extra-vars \'{0}\'", (json.dumps(extra_vars)))
             extra_vars_string = " --extra-vars '%s'" % (json.dumps(extra_vars).replace("'", "'\\''"))
 
         if vault_file:
             vault_file_string = " --vault-password-file '%s'" % (vault_file)
+ 
+        now = datetime.datetime.now()
+        datestr = now.strftime("%Y-%m-%d %H:%M")
 
         command = str.format("cd {0};ansible-playbook {1}{2}{3}{4}{5}", playbook_dir, playbook, become_string, inventory, extra_vars_string, vault_file_string)
         task_result = celery_runner.do_long_running_task.apply_async([command], soft=task_timeout, hard=task_timeout)
         result = {'task_id': task_result.id}
+
+        log = open('/usr/local/var/log/flansible.log','w')
+        log.write(datestr+" User "+curr_user+" executed playbook: "+playbook_dir+"/"+playbook+" "+extra_vars_string+" task_id: "+task_result.id+"\n")
+        log.close()
+
         return result
 
 api.add_resource(RunAnsiblePlaybook, '/api/ansibleplaybook')

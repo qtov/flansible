@@ -130,7 +130,7 @@ class RunAnsiblePlaybook(Resource):
         datestr = now.strftime("%Y-%m-%d %H:%M")
 
         command = str.format("cd {0};ansible-playbook {1}{2}{3}{4}{5}", playbook_dir, playbook, become_string, inventory, extra_vars_string, vault_file_string)
-        task_result = celery_runner.do_long_running_task.apply_async([command], soft=task_timeout, hard=task_timeout)
+        task_result = celery_runner.do_long_running_task.apply_async([command], soft=task_timeout, hard=task_timeout, expires=30)
         result = {'task_id': task_result.id}
 
         log = open('/usr/local/var/log/flansible.log','w')

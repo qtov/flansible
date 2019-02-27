@@ -1,4 +1,4 @@
- def get_playbook_repo_access(username, playbook_repo):
+def get_playbook_repo_access(username, playbook_repo):
      if username == "admin":
          return True
      result = False

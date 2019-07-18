@@ -5,6 +5,7 @@ import datetime
 from flask_restful import Resource, Api
 from flask_restful_swagger import swagger
 from flask_restful import reqparse
+from flask import request
 from flansible import app
 from flansible import api, app, celery, auth, ansible_default_inventory, get_inventory_access, task_timeout
 from ModelClasses import AnsibleCommandModel, AnsiblePlaybookModel, AnsibleRequestResultModel, AnsibleExtraArgsModel
@@ -134,7 +135,7 @@ class RunAnsiblePlaybook(Resource):
         result = {'task_id': task_result.id}
 
         log = open('/usr/local/var/log/flansible.log','w')
-        log.write(datestr+" User "+curr_user+" executed playbook: "+playbook_dir+"/"+playbook+" "+extra_vars_string+" task_id: "+task_result.id+"\n")
+        log.write(datestr+" User "+curr_user+" ("+request.remote_addr+") executed playbook: "+playbook_dir+"/"+playbook+" "+extra_vars_string+" task_id: "+task_result.id+"\n")
         log.close()
 
         return result

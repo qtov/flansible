@@ -18,9 +18,9 @@ def do_long_running_task(self, cmd, type='Ansible'):
                                 'returncode': None})
         print(str.format("About to execute: {0}", cmd))
         proc = Popen([cmd], stdout=PIPE, stderr=subprocess.STDOUT, shell=True)
-        for line in iter(proc.stdout.readline, ''):
-            print(str(line))
-            output = output + line
+        for line in iter(proc.stdout.readline,b''):
+            print(line)
+            output = output + str(line)
             self.update_state(state='PROGRESS', meta={'output': output,'description': "",'returncode': None})
 
         return_code = proc.poll()

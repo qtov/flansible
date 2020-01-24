@@ -8,9 +8,9 @@ import json
 from threading import Thread
 from subprocess import Popen, PIPE
 import subprocess
-from Queue import Queue, Empty
+from queue import Queue, Empty
 from datetime import datetime
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 from flask import render_template
 from flask import Flask, request, render_template, session, flash, redirect, url_for, jsonify
 from flask_httpauth import HTTPBasicAuth
@@ -50,7 +50,7 @@ task_timeout = int(str_task_timeout)
 api = swagger.docs(Api(app), apiVersion='0.1')
 
 celery = Celery(app.name, broker=app.config['broker_url'], backend=app.config['result_backend'])
-celery.control.time_limit('do_long_running_task', soft=900, hard=900, reply=True)
+celery.control.time_limit('celery_runner.do_long_running_task', soft=900, hard=900, reply=True)
 celery.conf.update(app.config)
 
 inventory_access = []

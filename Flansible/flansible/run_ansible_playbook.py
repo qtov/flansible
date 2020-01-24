@@ -13,7 +13,7 @@ import celery_runner
 from flansible_git import FlansibleGit
 import json
 
-import playbook_perms
+from playbook_perms import get_playbook_repo_access
 
 
 class RunAnsiblePlaybook(Resource):
@@ -134,7 +134,7 @@ class RunAnsiblePlaybook(Resource):
         task_result = celery_runner.do_long_running_task.apply_async([command], soft=task_timeout, hard=task_timeout, expires=30)
         result = {'task_id': task_result.id}
 
-        log = open('/usr/local/var/log/flansible.log','w')
+        log = open('/usr/local/var/log/flansible.log','a')
         log.write(datestr+" User "+curr_user+" ("+request.remote_addr+") executed playbook: "+playbook_dir+"/"+playbook+" "+extra_vars_string+" task_id: "+task_result.id+"\n")
         log.close()
 

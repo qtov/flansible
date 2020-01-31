@@ -2,7 +2,7 @@ from celery import Celery
 import subprocess
 from subprocess import Popen, PIPE
 from flansible import api, app, celery, task_timeout
-
+import datetime
 
 
 @celery.task(bind=True, soft_time_limit=task_timeout, time_limit=(task_timeout+10))
@@ -31,6 +31,16 @@ def do_long_running_task(self, cmd, type='Ansible'):
                     }
             self.update_state(state='FINISHED',
                               meta=meta)
+
+            now = datetime.datetime.now()
+            datestr = now.strftime("%Y-%m-%d %H:%M")
+
+            log = open('/usr/local/var/log/flansible-task-output.log','a')
+            log.write(datestr+" ----- Task succeeded ---- \n")
+            log.write(output)
+            log.write("\n ---------- task end ----------\n")
+            log.close()
+
         elif return_code is not 0:
             #failure
             meta = {'output': output, 
@@ -39,6 +49,16 @@ def do_long_running_task(self, cmd, type='Ansible'):
                     }
             self.update_state(state='FAILED',
                           meta=meta)
+
+            now = datetime.datetime.now()
+            datestr = now.strftime("%Y-%m-%d %H:%M")
+
+            log = open('/usr/local/var/log/flansible-task-output.log','a')
+            log.write(datestr+" ----- Task failed  ----- \n")
+            log.write(output)
+            log.write("\n ---------- task end ----------\n")
+            log.close()
+
         if len(output) is 0:
             output = "no output, maybe no matching hosts?"
             meta = {'output': output, 

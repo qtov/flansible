@@ -30,7 +30,7 @@ setuptools.setup(
         'redis==2.10.5',
         'scp==0.10.2',
         'paramiko==1.10.1',
-        'PyYAML==3.10',
+        # 'PyYAML==3.10',
         'httplib2==0.8',
         'requests==2.13.0',
         'lxml==4.9.3',

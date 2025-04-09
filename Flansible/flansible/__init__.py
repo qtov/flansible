@@ -19,7 +19,7 @@ from flask_restful_swagger import swagger
 from celery.events.state import State as state
 from celery import Celery
 
-from ModelClasses import AnsibleCommandModel, AnsiblePlaybookModel, AnsibleRequestResultModel, AnsibleExtraArgsModel
+from flansible.ModelClasses import AnsibleCommandModel, AnsiblePlaybookModel, AnsibleRequestResultModel, AnsibleExtraArgsModel
 
 
 #Setup queue for celery
@@ -31,7 +31,7 @@ auth = HTTPBasicAuth()
 this_path = sys.path[0]
 
 config = SafeConfigParser()
-config.read('/usr/local/etc/flansible/config.ini')
+config.read('config.ini')
 
 ansible_config = SafeConfigParser()
 try:

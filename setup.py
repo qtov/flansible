@@ -22,7 +22,7 @@ setuptools.setup(
     },
     install_requires=[
         'celery==4.0.0',
-        'Flask==0.10.1',
+        'Flask==1.1.4',
         'Flask-HTTPAuth==3.1.2',
         'Flask-RESTful==0.3.5',
         'flask-restful-swagger==0.19',

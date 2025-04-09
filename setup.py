@@ -33,7 +33,7 @@ setuptools.setup(
         'PyYAML==3.10',
         'httplib2==0.8',
         'requests==2.13.0',
-        'lxml==3.7.3',
+        'lxml==4.9.3',
         'cssselect==1.0.1',
         'xmltodict==0.10.2',
         'pywinrm==0.2.2',

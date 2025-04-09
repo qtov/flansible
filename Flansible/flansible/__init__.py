@@ -60,7 +60,7 @@ def get_inventory_access(username, inventory):
     if username == "admin":
         return True
     result = False
-    with open("/usr/local/etc/flansible/rbac.json") as rbac_file:
+    with open("rbac.json") as rbac_file:
         rbac_data = json.load(rbac_file)
     user_list = rbac_data['rbac']
     for user in user_list:
@@ -74,7 +74,7 @@ def get_inventory_access(username, inventory):
 @auth.verify_password
 def verify_password(username, password):
     result = False
-    with open("/usr/local/etc/flansible/rbac.json") as rbac_file:
+    with open("rbac.json") as rbac_file:
         rbac_data = json.load(rbac_file)
     user_list = rbac_data['rbac']
     for user in user_list:

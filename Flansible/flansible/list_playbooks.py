@@ -27,12 +27,10 @@ class Playbooks(Resource):
         yamlfiles = []
         print("listing playbooks in " + playbook_root)
         for root, dirs, files in os.walk(playbook_root):
-           for name in files:
-              if(get_playbook_repo_access(curr_user,root)):
-                 if name.endswith((".yaml", ".yml")):
+            for name in files:
+                if name.endswith((".yaml", ".yml")):
                     fileobj = {'playbook': name, 'playbook_dir': root}
                     yamlfiles.append(fileobj)
-        
         returnedfiles = []
         for fileobj in yamlfiles:
             if 'group_vars' in fileobj['playbook_dir']:

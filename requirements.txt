@@ -14,7 +14,6 @@ cryptography==2.8
 cssselect==1.0.1
 dbus-python==1.2.16
 distro==1.4.0
-flansible @ git+https://github.com/qtov/flansible.git@a319ae56c6d3f9e9e5f49fdeb5ec7e4aa160752f
 Flask==1.1.4
 Flask-HTTPAuth==3.1.2
 Flask-RESTful==0.3.10
